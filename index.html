@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusTransit - College Transport Information Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#035482',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+<!-- Top Alert Ticker -->
+
+<div class="bg-brand-900 text-slate-100 text-xs sm:text-sm py-2 px-4 border-b border-brand-800">
+     <marquee><div class="max-w-7xl mx-auto flex items-center overflow-hidden">
+        <span class="bg-amber-500 text-slate-900 font-bold px-2 py-0.5 rounded text-xs flex items-center shrink-0 mr-3 z-10">
+            <i class="fa-solid fa-bullhorn mr-1"></i> LIVE ALERTS
+        </span>
+        <div class="ticker-wrapper min-w-0 overflow-hidden">
+            <div class="ticker-content">
+                <!-- Original Sequence -->
+                <span class="inline-block mr-12"><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> Bus #12 (Chengam Route) running 10 mins late due to road work near Thandarampattu.</span>
+                <span class="inline-block mr-12"><i class="fa-solid fa-circle-info text-sky-300 mr-2"></i> Semester Transport Pass renewal deadline: 15th October. Avoid late penalty fee.</span>
+                <span class="inline-block mr-12"><i class="fa-solid fa-check-circle text-emerald-400 mr-2"></i> Route #15 new stop added: Arani Market starting tomorrow.</span>
+            </div>
+        </div>
+    </div></marquee>
+</div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-bus text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-brand-600 to-sky-500 bg-clip-text text-transparent dark:from-sky-400 dark:to-cyan-300">
+                            CampusTransit
+                        </span>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-widest uppercase -mt-1">Transport Portal</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-lg transition-colors text-brand-600 dark:text-sky-400 bg-brand-50 dark:bg-slate-800">
+                        <i class="fa-solid fa-chart-pie mr-1.5"></i>Dashboard
+                    </button>
+                    <button onclick="switchTab('routes')" id="nav-routes" class="nav-btn px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-route mr-1.5"></i>Bus Routes
+                    </button>
+                    <button onclick="switchTab('pickups')" id="nav-pickups" class="nav-btn px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-location-dot mr-1.5"></i>Pickup Points
+                    </button>
+                    <button onclick="switchTab('tracker')" id="nav-tracker" class="nav-btn px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-satellite-dish mr-1.5"></i>Live Simulator
+                    </button>
+                    <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-calculator mr-1.5"></i>Pass Calculator
+                    </button>
+                    <button onclick="switchTab('contacts')" id="nav-contacts" class="nav-btn px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-phone mr-1.5"></i>Helpdesk
+                    </button>
+                </nav>
+
+                <!-- Actions Right -->
+                <div class="flex items-center space-x-3">
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:ring-2 hover:ring-brand-500 transition-all" title="Toggle Theme">
+                        <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+                        <i class="fa-solid fa-sun text-lg hidden dark:block text-amber-400"></i>
+                    </button>
+                    <button class="md:hidden text-slate-600 dark:text-slate-300 p-2 text-xl" onclick="toggleMobileMenu()">
+                        <i class="fa-solid fa-bars" id="mobileMenuIcon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-chart-pie mr-2"></i>Dashboard</button>
+            <button onclick="switchTab('routes'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-route mr-2"></i>Bus Routes</button>
+            <button onclick="switchTab('pickups'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-location-dot mr-2"></i>Pickup Points</button>
+            <button onclick="switchTab('tracker'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-satellite-dish mr-2"></i>Live Simulator</button>
+            <button onclick="switchTab('calculator'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-calculator mr-2"></i>Pass Calculator</button>
+            <button onclick="switchTab('contacts'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-phone mr-2"></i>Helpdesk</button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- SECTION: Dashboard -->
+        <section id="section-dashboard" class="space-y-6">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-900 via-brand-700 to-sky-700 text-white p-6 sm:p-10 shadow-xl">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-block bg-sky-400/20 text-sky-200 border border-sky-300/30 text-xs font-semibold px-3 py-1 rounded-full mb-3 uppercase tracking-wider">Official Portal &middot; Tiruvannamalai Outer Bypass Campus</span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-3">Safe, Punctual & Efficient Campus Commute</h1>
+                    <p class="text-sky-100 text-sm sm:text-base mb-6 leading-relaxed">Check live bus locations, explore pickup points across Tiruvannamalai district, download schedules, and calculate your semester transit pass.</p>
+
+                    <!-- Quick Search Input -->
+                    <div class="relative max-w-xl">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                        <input type="text" id="heroSearchInput" onkeyup="handleHeroSearch(event)" placeholder="Search bus no. (e.g. Bus 05), town or stop..." class="w-full pl-12 pr-28 py-3.5 rounded-xl text-slate-900 dark:text-white bg-white dark:bg-slate-800 shadow-lg border-0 focus:ring-4 focus:ring-sky-300 dark:focus:ring-sky-600 outline-none placeholder-slate-400 text-sm sm:text-base">
+                        <button onclick="executeHeroSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow">
+                            Search
+                        </button>
+                    </div>
+                </div>
+                <!-- Graphic SVG Decor -->
+                <div class="hidden lg:block absolute right-8 bottom-0 opacity-20 pointer-events-none transform translate-y-4">
+                    <i class="fa-solid fa-bus-simple text-[240px] text-white"></i>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl text-2xl"><i class="fa-solid fa-bus"></i></div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Active Buses</p>
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">6</h3>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3.5 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-xl text-2xl"><i class="fa-solid fa-route"></i></div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Total Routes</p>
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">6</h3>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3.5 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-xl text-2xl"><i class="fa-solid fa-location-crosshairs"></i></div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Pickup Points</p>
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">21</h3>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex items-center space-x-4">
+                    <div class="p-3.5 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-xl text-2xl"><i class="fa-solid fa-clock"></i></div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Daily Hours</p>
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">6 AM - 8 PM</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div onclick="switchTab('routes')" class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-sky-400 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-sky-100 dark:bg-sky-900/50 rounded-xl flex items-center justify-center text-brand-600 dark:text-sky-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bus-simple"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-brand-600 dark:group-hover:text-sky-400 transition-colors">Bus Routes & Drivers</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">View detailed list of bus numbers, driver details, contact numbers, and live operational status.</p>
+                </div>
+
+                <div onclick="switchTab('tracker')" class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-sky-400 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Live Simulation Visualizer</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Track buses dynamically in an interactive map simulator and check stop progression in real-time.</p>
+                </div>
+
+                <div onclick="switchTab('calculator')" class="group p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-sky-400 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Pass Fee Calculator</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Calculate semester transportation fees based on distance zones and print fee breakdowns instantly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Bus Routes -->
+        <section id="section-routes" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Bus Routes Directory</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Explore complete routes, timings, and driver contact info.</p>
+                </div>
+                <!-- Filtering Controls -->
+                <div class="flex flex-wrap gap-2">
+                    <input type="text" id="routesSearch" oninput="renderRoutes()" placeholder="Search bus #, route or town" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <select id="routesZoneFilter" onchange="renderRoutes()" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="ALL">All Zones</option>
+                        <option value="North">North Zone</option>
+                        <option value="South">South Zone</option>
+                        <option value="East">East Zone</option>
+                        <option value="West">West Zone</option>
+                        <option value="Central">Central Zone</option>
+                    </select>
+                    <select id="routesStatusFilter" onchange="renderRoutes()" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="ALL">All Statuses</option>
+                        <option value="On Time">On Time</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="In Maintenance">Maintenance</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Routes Grid -->
+            <div id="routesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated by JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: Pickup Points -->
+        <section id="section-pickups" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Pickup Points & Timings</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Find your nearest stop, morning pickup, and evening return timings.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <input type="text" id="pickupSearch" oninput="renderPickups()" placeholder="Search stop / town..." class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <select id="pickupShiftFilter" onchange="renderPickups()" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="ALL">All Shifts</option>
+                        <option value="Morning">Morning Shift (6:20-8:10 AM)</option>
+                        <option value="Evening">Evening Return (4:30-5:45 PM)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pickup Points Table -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 uppercase text-xs">
+                            <tr>
+                                <th class="px-6 py-4">Pickup Point</th>
+                                <th class="px-6 py-4">Zone / Area</th>
+                                <th class="px-6 py-4">Assigned Bus</th>
+                                <th class="px-6 py-4">Morning Time</th>
+                                <th class="px-6 py-4">Evening Return</th>
+                                <th class="px-6 py-4">Key Landmark</th>
+                                <th class="px-6 py-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pickupsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+                            <!-- Dynamically Populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Live Simulator -->
+        <section id="section-tracker" class="hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span class="relative flex h-3 w-3">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                        </span>
+                        Live Bus Simulator
+                    </h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Select a bus to visualize its continuous real-time simulated progress along its route.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Select Bus:</label>
+                    <select id="simulatorBusSelect" onchange="initTrackerSimulation()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm font-bold text-brand-600 dark:text-sky-400 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Canvas Map Visualizer -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Map Area -->
+                <div class="lg:col-span-2 bg-slate-900 p-4 rounded-2xl shadow-lg border border-slate-800 relative flex flex-col justify-between min-h-[420px]">
+                    <div class="flex justify-between items-center mb-2 px-2 text-xs text-slate-400">
+                        <span><i class="fa-solid fa-compass mr-1"></i> Interactive Visual Map View</span>
+                        <span id="simulatorSpeedLabel" class="text-emerald-400 font-mono"><i class="fa-solid fa-gauge-high mr-1"></i> Speed: 42 km/h</span>
+                    </div>
+
+                    <!-- Visual Canvas -->
+                    <div class="relative w-full flex-grow bg-slate-950 rounded-xl overflow-hidden border border-slate-800">
+                        <canvas id="trackerCanvas" class="w-full h-full block"></canvas>
+                    </div>
+
+                    <div class="mt-3 flex items-center justify-between px-2 text-xs text-slate-400">
+                        <div class="flex items-center space-x-4">
+                            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-emerald-500 mr-1.5 inline-block"></span> Current Bus</span>
+                            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-sky-400 mr-1.5 inline-block"></span> Pickup Stop</span>
+                            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-amber-500 mr-1.5 inline-block"></span> Campus End</span>
+                        </div>
+                        <button onclick="resetSimulation()" class="text-sky-400 hover:underline text-xs"><i class="fa-solid fa-rotate-right mr-1"></i> Restart Loop</button>
+                    </div>
+                </div>
+
+                <!-- Live Route Status Sidebar -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2" id="simBusTitle">Bus #01 Information</h3>
+                        <div class="text-xs space-y-2 mb-6">
+                            <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                                <span class="text-slate-500">Route Name:</span>
+                                <span class="font-semibold text-slate-800 dark:text-slate-200" id="simRouteName">Tiruvannamalai Town Shuttle</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                                <span class="text-slate-500">Driver:</span>
+                                <span class="font-semibold text-slate-800 dark:text-slate-200" id="simDriverName">Murugan K. (+91 90000 00001)</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                                <span class="text-slate-500">Next Stop ETA:</span>
+                                <span class="font-bold text-emerald-600 dark:text-emerald-400" id="simNextEta">4 mins</span>
+                            </div>
+                        </div>
+
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Live Stop Progression</h4>
+                        <div id="simStopList" class="space-y-3 relative pl-4 border-l-2 border-slate-200 dark:border-slate-700">
+                            <!-- Populated JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Pass Fee Calculator -->
+        <section id="section-calculator" class="hidden space-y-6 max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="text-center max-w-lg mx-auto mb-8">
+                    <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Semester Transport Fee Calculator</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Select your distance slab or stop location to calculate your official semester transport fee and pass eligibility.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    <!-- Form Controls -->
+                    <div class="space-y-4 bg-slate-50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Select Student Category</label>
+                            <select id="calcCategory" onchange="calculateFee()" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm font-medium focus:ring-2 focus:ring-brand-500">
+                                <option value="regular">Regular Student (Full Semester)</option>
+                                <option value="faculty">Faculty / Staff Member</option>
+                                <option value="concession">Merit / Sports Concession (20% OFF)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Select Distance Zone / Stop</label>
+                            <select id="calcZone" onchange="calculateFee()" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm font-medium focus:ring-2 focus:ring-brand-500">
+                                <option value="10">Zone A (0 - 10 km, e.g. Tiruvannamalai town) - &#8377;3,000 / Semester</option>
+                                <option value="25">Zone B (10 - 25 km, e.g. Somasipadi, Kilpennathur) - &#8377;4,500 / Semester</option>
+                                <option value="40">Zone C (25 - 40 km, e.g. Polur, Chengam) - &#8377;6,000 / Semester</option>
+                                <option value="50">Zone D (40+ km, e.g. Arani, Vandavasi) - &#8377;7,500 / Semester</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Pass Duration</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" id="btnTerm1" onclick="setCalcTerm('semester')" class="py-2.5 px-3 rounded-xl border text-xs font-bold transition-all border-brand-500 bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-sky-400">
+                                    Single Semester (6 Mos)
+                                </button>
+                                <button type="button" id="btnTerm2" onclick="setCalcTerm('annual')" class="py-2.5 px-3 rounded-xl border text-xs font-bold transition-all border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">
+                                    Annual Pass (10% Disc)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Summary Card -->
+                    <div class="bg-gradient-to-br from-brand-900 to-slate-900 text-white p-6 rounded-2xl shadow-xl flex flex-col justify-between space-y-6">
+                        <div>
+                            <span class="text-xs uppercase font-semibold text-sky-300 tracking-wider">Estimated Fee Breakdown</span>
+                            <div class="mt-4 space-y-2 text-sm border-b border-slate-700/80 pb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Base Transport Fare:</span>
+                                    <span class="font-semibold" id="calcBaseFare">&#8377;4,500.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Category Discount:</span>
+                                    <span class="font-semibold text-emerald-400" id="calcDiscount">-&#8377;0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-300">Insurance & Tech Fee:</span>
+                                    <span class="font-semibold">&#8377;200.00</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex justify-between items-baseline">
+                                <span class="text-lg font-bold text-white">Total Payable:</span>
+                                <span class="text-3xl font-extrabold text-sky-400" id="calcTotal">&#8377;4,700.00</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <button onclick="printFeeReceipt()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-print"></i>
+                                <span>Generate Pass Estimate PDF</span>
+                            </button>
+                            <p class="text-[11px] text-slate-400 text-center">Fees are payable at the Accounts Department or Student Online Portal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Emergency & Helpdesk -->
+        <section id="section-contacts" class="hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Transport Helpdesk & Contacts</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Reach out to the transport department for lost and found, bus delays, or pass queries.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Control Room -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+                    <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto text-xl mb-3">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">Emergency Hotline</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">24/7 Helpline for breakdown or route delays</p>
+                    <a href="tel:+919000000000" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition-all">+91 90000 00000</a>
+                </div>
+
+                <!-- Transport Officer -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+                    <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-sky-400 flex items-center justify-center mx-auto text-xl mb-3">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">Chief Transport Officer</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Transport In-charge (Room 102, Admin Block)</p>
+                    <a href="mailto:transport@college.edu" class="inline-block bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-sm px-4 py-2 rounded-xl transition-all">transport@college.edu</a>
+                </div>
+
+                <!-- Lost & Found -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+                    <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto text-xl mb-3">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">Lost & Found Desk</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Inquire about belongings left on campus buses</p>
+                    <button onclick="alert('Please visit Room 104 in the Central Workshop building or email lost-found@college.edu with your bus number.')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm px-4 py-2 rounded-xl transition-all">Report Lost Item</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: Full Route Timeline -->
+    <div id="routeModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="modalBusTitle">Bus Route Details</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400" id="modalRouteSubtitle">Complete stop-by-stop timeline</p>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white p-2 text-xl">&times;</button>
+            </div>
+
+            <div class="py-4 overflow-y-auto flex-grow space-y-4" id="modalTimelineBody">
+                <!-- Dynamically rendered -->
+            </div>
+
+            <div class="pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold text-sm rounded-xl transition-all">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-12 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 College Transportation Department. All rights reserved.</p>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:underline">Privacy Policy</a>
+                <a href="#" class="hover:underline">Terms of Service</a>
+                <a href="#" class="hover:underline">Driver Portal</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
